@@ -1,11 +1,15 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+
+    // setting loading coordinates
+    this.y = y;
+    this.x = x;
 };
 
 // Update the enemy's position, required method for game
@@ -28,9 +32,40 @@ Enemy.prototype.render = function() {
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
+var enemyOne = new Enemy(0, 60);
+var enemyTwo = new Enemy(0, 145);
+var enemyThree = new Enemy(0, 230);
+var allEnemies = [enemyOne, enemyTwo, enemyThree];
+
 // Place the player object in a variable called player
+var player = function(x, y){
+    this.sprite = 'images/char-boy.png';
+    this.x = x;
+    this.y = y;
+}
 
+var Player = new player(150, 400);
 
+// the rendering for the play is similar to the code that was used in the
+// enemy rendering function.
+// there are changes that were made specific to the x and y coordinates
+player.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+player.prototype.update = function(){
+
+}
+
+player.prototype.handleInput = function(){
+
+}
+
+player.prototype.reset = function(){
+    // this is where the player will load and keep reseting
+    this.x = 150;
+    this.y = 150;
+}
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -42,5 +77,5 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+    player.prototype.handleInput(allowedKeys[e.keyCode]);
 });
