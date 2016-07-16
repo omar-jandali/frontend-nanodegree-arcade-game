@@ -1,3 +1,4 @@
+'use strict';
 // Enemies our player must avoid
 var Enemy = function(y, speed) {
     // Variables applied to each of our instances go here,
@@ -18,12 +19,13 @@ var Enemy = function(y, speed) {
     this.speed = speed;
 
     this.width = 70;
+    this.height = 15;
 };
 
 Enemy.prototype.collisionsCheck = function(){
     if(player.y <= 238 && player.y >= 74){
         //console.log("player is now live");
-        if(player.y < this.y + 15 && player.y > this.y - 15 &&
+        if(player.y < this.y + this.height && player.y > this.y - this.height &&
            player.x < this.x + this.width && player.x + player.width > this.x){
             //console.log("there has been a collision");
             player.reset();
@@ -131,10 +133,6 @@ var topBoundry = -12;
 
 var currentScore = 0;
 var highestScore = 0;
-
-// the following height and width are for the enemy and player objects in the game
-var Width = 171;
-var Height = 101;
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
