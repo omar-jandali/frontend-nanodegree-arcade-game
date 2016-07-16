@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function(x, y) {
+var Enemy = function(y, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -7,10 +7,30 @@ var Enemy = function(x, y) {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    // setting loading coordinates
+    // this is the initial location of the enemies
+        //the x coordinate is set to 1 for testing
+        //the y coordinate is passed with the instance of the enemy
+    this.x = -151;
     this.y = y;
-    this.x = x;
+
+    // this is the testing testing speed of the enemies that are passed
+    // at the time of instance creation
+    this.speed = speed;
+
+    this.width = 70;
 };
+
+Enemy.prototype.collisionsCheck = function(){
+    if(player.y <= 238 && player.y >= 74){
+        console.log("player is now live");
+        if(player.y < this.y + 15 && player.y > this.y - 15 &&
+           player.x < this.x + this.width && player.x + player.width > this.x){
+            console.log("there has been a collision");
+            player.reset();
+            currentScore = 0;
+        }
+    }
+}
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -18,6 +38,13 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    //console.log(this.speed);
+    this.x = this.x + (this.speed * dt);
+    if(this.x >= 555){
+        this.x = -151
+    }
+
+    this.collisionsCheck();
 };
 
 // Draw the enemy on the screen, required method for game
@@ -25,47 +52,89 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-
-
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-var enemyOne = new Enemy(0, 60);
-var enemyTwo = new Enemy(0, 145);
-var enemyThree = new Enemy(0, 230);
-var allEnemies = [enemyOne, enemyTwo, enemyThree];
-
-// Place the player object in a variable called player
-var player = function(x, y){
+var Player = function(){
+    // the sprite/image that will load the player
     this.sprite = 'images/char-boy.png';
-    this.x = x;
-    this.y = y;
+    this.x = 202;
+    this.y = 402;
+
+    this.width = 50;
+
 }
 
-var Player = new player(150, 400);
+Player.prototype.reset = function(){
+    this.x = 202;
+    this.y = 402;
+}
 
-// the rendering for the play is similar to the code that was used in the
-// enemy rendering function.
-// there are changes that were made specific to the x and y coordinates
-player.prototype.render = function(){
+Player.prototype.update = function(){
+
+    if (this.y <= 72){
+        this.y = 402;
+        currentScore ++;
+        if(currentScore > highestScore){
+            highestScore = currentScore;
+        }
+        console.log("current score : " + currentScore);
+        console.log("highest score : " + highestScore);
+    }
+}
+
+Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-player.prototype.update = function(){
-
+Player.prototype.handleInput = function(allowedKeys){
+    if(allowedKeys === "left" && this.x >= leftBoundry){
+        this.x -= 101;
+    }
+    if(allowedKeys === "right" && this.x <= rightBoundry){
+        this.x += 101;
+    }
+    if(allowedKeys === "up" && this.y > topBoundry){
+        this.y -= 82;
+    }
+    if(allowedKeys === "down" && this.y < bottomBoundry){
+        this.y += 82;
+    }
 }
 
-player.prototype.handleInput = function(){
-
+var initiatePlayer = function(){
+    this.x = 202;
+    this.y = 402;
 }
 
-player.prototype.reset = function(){
-    // this is where the player will load and keep reseting
-    this.x = 150;
-    this.y = 150;
+var speedGenerator = function(){
+    // this is a list of all the different speed option that is designated
+    // to the enemy instances
+    var speeds = [50, 100, 200, 300, 400, 500];
+    var speedRandomizer = speeds[Math.floor(Math.random() * speeds.length)];
+
+    return speedRandomizer;
 }
+
+// this is all of the enemies being defined based on the enemy object
+// then the enemies are stored in an array for the engine.js file to run
+var Growlith = new Enemy(60, speedGenerator());
+var Pidgeyot = new Enemy(145, speedGenerator());
+var Blazikin = new Enemy(230, speedGenerator());
+var allEnemies = [Growlith, Pidgeyot, Blazikin];
+
+// this is the single instance of the player that you will be using in the game
+var player = new Player();
+
+// these variables will signify the player boundries (left, right, top, bottom)
+var leftBoundry = 1;
+var rightBoundry = 303;
+var bottomBoundry = 402;
+var topBoundry = -12;
+
+var currentScore = 0;
+var highestScore = 0;
+
+// the following height and width are for the enemy and player objects in the game
+var Width = 171;
+var Height = 101;
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -77,5 +146,5 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.prototype.handleInput(allowedKeys[e.keyCode]);
+    player.handleInput(allowedKeys[e.keyCode]);
 });
