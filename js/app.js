@@ -22,10 +22,10 @@ var Enemy = function(y, speed) {
 
 Enemy.prototype.collisionsCheck = function(){
     if(player.y <= 238 && player.y >= 74){
-        console.log("player is now live");
+        //console.log("player is now live");
         if(player.y < this.y + 15 && player.y > this.y - 15 &&
            player.x < this.x + this.width && player.x + player.width > this.x){
-            console.log("there has been a collision");
+            //console.log("there has been a collision");
             player.reset();
             currentScore = 0;
         }
